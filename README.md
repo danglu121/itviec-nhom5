@@ -9,14 +9,26 @@ and "Recommend or Not" Classification for Candidates**.
 
 ---
 
-## 1. Ba chức năng
+## 1. Ứng dụng dành cho ai
 
-| Trang | Nội dung |
+Người dùng chọn vai khi vào app, và các mục sẽ đổi theo vai đó.
+
+| Vai | Mục chính | Nội dung |
+|---|---|---|
+| **Tôi đang tìm việc** | Tìm công ty phù hợp | Bắt đầu từ một công ty đã thích, hoặc tả bằng lời nơi muốn làm việc |
+| | Đọc hiểu một đánh giá | Dán một review tìm được, xem nó nghiêng về khen hay chê |
+| **Tôi là nhà tuyển dụng** | Công ty cùng nhóm với chúng tôi | Xem nhóm công ty đang cạnh tranh thu hút cùng tệp ứng viên |
+| | Phân tích phản hồi nhân viên | Dán phản hồi của nhân viên để phát hiện sớm dấu hiệu không hài lòng |
+
+Hai mục còn lại dùng chung cho cả hai vai:
+
+| Mục | Nội dung |
 |---|---|
-| **Gợi ý công ty tương tự** | Chọn một trong 477 công ty để xem 20 công ty gần nhất, hoặc nhập mô tả tự do bằng tiếng Việt hay tiếng Anh để tìm công ty phù hợp |
-| **Dự đoán Recommend or Not** | Nhập nội dung đánh giá và 6 điểm số thành phần, nhận xác suất nhân viên sẽ giới thiệu công ty, kèm phân tích độ nhạy theo điểm số |
-| **Phân tích dữ liệu** | 8 biểu đồ khảo sát dữ liệu chia ba nhóm: hồ sơ công ty, đánh giá và review, ngôn ngữ và văn bản |
-| **Hiệu năng mô hình** | Precision@5 so với mốc ngẫu nhiên, ma trận nhầm lẫn, 5 biểu đồ chi tiết từ notebook, và các hạn chế đã biết |
+| **Toàn cảnh thị trường IT** | Lĩnh vực nào nhiều công ty, quy mô đội ngũ, nhân viên hài lòng về điều gì, và chuyện trộn hai ngôn ngữ |
+| **Về ứng dụng** | Viết cho người thường đọc: số liệu đến từ đâu, chính xác tới đâu, khi nào không nên tin. Phần kỹ thuật đặt trong mục mở rộng cho ai quan tâm |
+
+Toàn bộ nội dung viết theo hướng **giải quyết việc của người dùng**, không trình
+bày quy trình xây dựng mô hình.
 
 ## 2. Mô hình đứng sau
 
@@ -131,6 +143,12 @@ pyvi
 Lưu ý rằng `recommend_clf.joblib` được tạo bằng scikit-learn 1.9 và xgboost 3.4. Nếu
 Streamlit Cloud cài phiên bản khác hẳn thì có thể hiện cảnh báo lúc nạp mô hình. Trường
 hợp đó cần chạy lại `build_artifacts.py` với đúng phiên bản thư viện của môi trường đích.
+
+## Minh hoạ trong ứng dụng
+
+Ảnh đầu trang và các thẻ chọn vai (toà nhà văn phòng, cặp tài liệu, nhân viên) đều do nhóm **tự vẽ bằng matplotlib**,
+mã nguồn nằm trong `draw_art.py`. Không dùng ảnh hay logo của bên thứ ba, nên
+không vướng vấn đề bản quyền khi công khai repository.
 
 ---
 
