@@ -1,0 +1,55 @@
+{
+ "n_companies": 477,
+ "topk": 20,
+ "yeucau1": {
+  "method": "B · TF-IDF (Gensim) + SparseMatrixSimilarity",
+  "precision": {
+   "A · cosine (sklearn)": {
+    "Company industry": 0.2177,
+    "Company Type": 0.4826,
+    "Company size": 0.3325
+   },
+   "B · TF-IDF (Gensim)": {
+    "Company industry": 0.2277,
+    "Company Type": 0.491,
+    "Company size": 0.3371
+   },
+   "C · LSI (Gensim)": {
+    "Company industry": 0.2182,
+    "Company Type": 0.4901,
+    "Company size": 0.3304
+   },
+   "D · BM25 Okapi": {
+    "Company industry": 0.2048,
+    "Company Type": 0.4906,
+    "Company size": 0.3128
+   },
+   "E · Doc2Vec (Gensim)": {
+    "Company industry": 0.1771,
+    "Company Type": 0.4642,
+    "Company size": 0.3405
+   }
+  },
+  "baseline": {
+   "Company industry": 0.1284,
+   "Company Type": 0.4386,
+   "Company size": 0.2527
+  }
+ },
+ "yeucau2": {
+  "model": "XGBoost (văn bản + điểm số, không cân bằng lớp)",
+  "n_train": 6733,
+  "n_test": 1684,
+  "yes_pct": 87.7,
+  "Accuracy": 0.9424,
+  "Precision_No": 0.8385,
+  "Recall_No": 0.6553,
+  "F1_No": 0.7357,
+  "ROC_AUC": 0.9377,
+  "TN": 135,
+  "FP": 71,
+  "FN": 26,
+  "TP": 1452,
+  "baseline_accuracy": 0.8777
+ }
+}
