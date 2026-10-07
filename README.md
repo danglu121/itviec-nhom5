@@ -15,7 +15,8 @@ and "Recommend or Not" Classification for Candidates**.
 |---|---|
 | **Gợi ý công ty tương tự** | Chọn một trong 477 công ty để xem 20 công ty gần nhất, hoặc nhập mô tả tự do bằng tiếng Việt hay tiếng Anh để tìm công ty phù hợp |
 | **Dự đoán Recommend or Not** | Nhập nội dung đánh giá và 6 điểm số thành phần, nhận xác suất nhân viên sẽ giới thiệu công ty, kèm phân tích độ nhạy theo điểm số |
-| **Hiệu năng mô hình** | Precision@5 so với mốc ngẫu nhiên, ma trận nhầm lẫn, và các hạn chế đã biết |
+| **Phân tích dữ liệu** | 8 biểu đồ khảo sát dữ liệu chia ba nhóm: hồ sơ công ty, đánh giá và review, ngôn ngữ và văn bản |
+| **Hiệu năng mô hình** | Precision@5 so với mốc ngẫu nhiên, ma trận nhầm lẫn, 5 biểu đồ chi tiết từ notebook, và các hạn chế đã biết |
 
 ## 2. Mô hình đứng sau
 
@@ -49,7 +50,11 @@ GUI_Project2/
 │   ├── neighbors_gensim.npz    20 láng giềng gần nhất mỗi công ty, tính sẵn
 │   ├── search_tfidf.joblib     vectorizer phục vụ tìm kiếm tự do
 │   ├── recommend_clf.joblib    bộ phân loại XGBoost
+│   ├── map_2d.npy              toạ độ t-SNE để vẽ bản đồ công ty
 │   └── metadata.json           chỉ số đánh giá
+├── figures/
+│   ├── banner.png              ảnh đầu trang, tự dựng bằng matplotlib
+│   └── 01..15_*.png            14 biểu đồ phân tích từ notebook
 ├── requirements.txt
 ├── setup.sh
 ├── Procfile
@@ -57,7 +62,18 @@ GUI_Project2/
 └── .streamlit/config.toml
 ```
 
-Toàn bộ artifact chỉ **1,2 MB**.
+Toàn bộ artifact chỉ **1,2 MB**, biểu đồ thêm khoảng 0,9 MB.
+
+### Bản đồ công ty hai chiều
+
+Trang gợi ý có một bản đồ đặt toàn bộ 477 công ty lên mặt phẳng, tô đậm công ty gốc
+và các gợi ý. Toạ độ do **t-SNE** sinh ra từ 50 thành phần SVD đầu của ma trận TF-IDF.
+
+Phép chiếu từ hơn bốn nghìn chiều xuống hai chiều luôn mất mát, nên bản đồ là hình
+minh hoạ chứ không phải thước đo khoảng cách chính xác. Để biết nó mất mát tới mức
+nào, tôi đã đo: **46,7% láng giềng thật rơi vào 20 điểm gần nhất trên bản đồ**, so với
+4,2% nếu các điểm được đặt ngẫu nhiên. Chiếu thẳng bằng SVD hai chiều chỉ đạt 14,8%,
+nên t-SNE được chọn.
 
 ## 4. Dữ liệu được đóng gói ở mức tối thiểu
 
