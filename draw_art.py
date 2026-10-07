@@ -16,7 +16,7 @@ from matplotlib.patches import Circle, FancyBboxPatch, Polygon, Rectangle
 mpl.use("Agg")
 
 BASE = Path("/home/dang.lu/Personal/Final ML")
-T1 = BASE / "GUI_Topic1" / "figures"
+T1 = BASE / "GUI_Project1" / "figures"
 P2 = BASE / "GUI_Project2" / "figures"
 for d in (T1, P2):
     d.mkdir(parents=True, exist_ok=True)
