@@ -643,7 +643,7 @@ không học được gì.
         c1.metric("P@5 lĩnh vực", f"{p_tot_nhat * 100:.1f}%")
         c1.caption(f"mốc ngẫu nhiên "
                    f"{meta['yeucau1']['baseline']['Company industry'] * 100:.1f}%")
-        c2.metric("F1 lớp không giới thiệu", f"{m2['F1_No']:.3f}")
+        c2.metric("F1 lớp thiểu số", f"{m2['F1_No']:.3f}")
         c2.caption("đoán bừa cho 0,000")
         c3.metric("ROC-AUC", f"{m2['ROC_AUC']:.3f}")
         c4.metric("Accuracy", f"{m2['Accuracy']:.3f}")
