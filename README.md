@@ -151,8 +151,3 @@ mã nguồn nằm trong `draw_art.py`. Không dùng ảnh hay logo của bên th
 không vướng vấn đề bản quyền khi công khai repository.
 
 ---
-
-> **LƯU Ý PHÁP LÝ.** TẤT CẢ DỮ LIỆU ĐƯỢC CUNG CẤP CHỈ DÀNH CHO VIỆC HỌC TẬP, KHÔNG
-> CHIA SẺ, SỬ DỤNG VỚI MỤC ĐÍCH KHÁC. Vì việc chia sẻ, sử dụng cho các mục đích khác
-> đều có thể vi phạm Bản quyền và quyền sở hữu trí tuệ, Điều khoản sử dụng của trang
-> web, Bảo vệ dữ liệu cá nhân... → vấn đề pháp lý.
