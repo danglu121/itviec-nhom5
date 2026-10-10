@@ -160,6 +160,18 @@ def the_cong_ty(rows: pd.DataFrame, diem: np.ndarray, goc: pd.Series | None):
             b.caption(f"Làm việc {r['Working days']}  ·  {r['Overtime Policy']}")
 
 
+def zoom_giu_shift():
+    """Phóng to bằng con lăn, nhưng phải giữ Shift.
+
+    Để .interactive() mặc định thì biểu đồ nuốt mọi thao tác con lăn: người
+    dùng tưởng đang cuộn trang mà hoá ra đang phóng to biểu đồ, và trục bị
+    kéo ra những khoảng vô nghĩa. Buộc giữ Shift thì cuộn trang vẫn bình
+    thường, ai muốn phóng to thì vẫn phóng được.
+    """
+    return alt.selection_interval(bind="scales",
+                                  zoom="wheel![event.shiftKey]")
+
+
 def diem_danh_gia(cty_id):
     """Trả về dòng thống kê của một công ty, hoặc None nếu chưa ai đánh giá."""
     st_df = load_stats()
@@ -630,11 +642,11 @@ elif page == "Toàn cảnh thị trường IT":
                      alt.Tooltip("Overall rating:Q", format=".2f", title="Điểm"),
                      alt.Tooltip("ty_le_gioi_thieu:Q", format=".0f",
                                  title="% giới thiệu")],
-        ).properties(height=400).interactive(), use_container_width=True)
+        ).properties(height=400).add_params(zoom_giu_shift()), use_container_width=True)
     st.caption(
         f"Đang hiện {len(loc)} công ty. Trục ngang dùng thang log vì số đánh "
         "giá chênh nhau rất lớn, từ 3 tới hơn hai nghìn. Rê chuột lên từng "
-        "chấm để xem tên, cuộn để phóng to, kéo để di chuyển. "
+        "chấm để xem tên. Giữ Shift rồi cuộn để phóng to, kéo để di chuyển. "
         "**Các chấm bên trái là công ty có rất ít đánh giá**, điểm của họ kém "
         "tin cậy hơn dù cao hay thấp."
     )
@@ -660,7 +672,7 @@ elif page == "Toàn cảnh thị trường IT":
                          alt.Tooltip("so_review:Q", title="Số đánh giá"),
                          alt.Tooltip("ty_le_gioi_thieu:Q", format=".0f",
                                      title="% giới thiệu")],
-            ).properties(height=280).interactive(), use_container_width=True)
+            ).properties(height=280).add_params(zoom_giu_shift()), use_container_width=True)
     with c2:
         st.metric("Đánh giá trong khoảng", f"{int(tv['so_review'].sum()):,}")
         st.metric("Tỷ lệ giới thiệu trung bình",
