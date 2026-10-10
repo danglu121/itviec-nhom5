@@ -180,5 +180,3 @@ Các bước cắt ảnh và tách nền nằm trong `prep_images.py`, chạy l�
 bảo trợ. Hình ảnh được dùng trong phạm vi học tập để minh hoạ cho bộ dữ liệu mà
 nhà trường cung cấp. Ứng dụng ghi rõ điều này ngay dưới dải ảnh đầu trang và
 trong mục Về ứng dụng.
-
----
