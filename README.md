@@ -144,10 +144,23 @@ Lưu ý rằng `recommend_clf.joblib` được tạo bằng scikit-learn 1.9 và
 Streamlit Cloud cài phiên bản khác hẳn thì có thể hiện cảnh báo lúc nạp mô hình. Trường
 hợp đó cần chạy lại `build_artifacts.py` với đúng phiên bản thư viện của môi trường đích.
 
-## Minh hoạ trong ứng dụng
+## Hình ảnh trong ứng dụng
 
-Ảnh đầu trang và các thẻ chọn vai (toà nhà văn phòng, cặp tài liệu, nhân viên) đều do nhóm **tự vẽ bằng matplotlib**,
-mã nguồn nằm trong `draw_art.py`. Không dùng ảnh hay logo của bên thứ ba, nên
-không vướng vấn đề bản quyền khi công khai repository.
+| Tập tin | Nguồn | Dùng ở đâu |
+|---|---|---|
+| `figures/itviec_logo.png` | Logo ITViec, đã tách nền trắng | Đầu thanh bên |
+| `figures/hero_itviec.jpg` | Ảnh chiến dịch của ITViec, đã cắt bỏ phần khẩu hiệu | Dải ảnh đầu mọi trang |
+| `figures/vai_ung_vien_anh.jpg` | Cắt từ ảnh minh hoạ của ITViec | Thẻ vai ứng viên |
+| `figures/vai_nha_tuyen_dung_anh.jpg` | Cắt từ cùng ảnh đó | Thẻ vai nhà tuyển dụng |
+| `figures/itviec_minhhoa.jpg` | Ảnh minh hoạ của ITViec, thu nhỏ | Đầu trang Về ứng dụng |
+| `figures/0*.png`, `figures/1*.png` | Biểu đồ do nhóm tạo từ notebook phân tích | Trang thị trường và mục chi tiết kỹ thuật |
+
+Các bước cắt ảnh và tách nền nằm trong `prep_images.py`, chạy lại được nếu cần.
+
+**Về quyền sở hữu.** Tên, logo và hình ảnh ITViec thuộc quyền sở hữu của ITViec.
+Đây là bài tập của sinh viên, **không liên kết với ITViec** và không được ITViec
+bảo trợ. Hình ảnh được dùng trong phạm vi học tập để minh hoạ cho bộ dữ liệu mà
+nhà trường cung cấp. Ứng dụng ghi rõ điều này ngay dưới dải ảnh đầu trang và
+trong mục Về ứng dụng.
 
 ---

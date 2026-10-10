@@ -80,7 +80,7 @@ meta = load_meta()
 m2 = meta["yeucau2"]
 
 # ════════════════════════════════════════════════════ Thanh bên
-st.sidebar.title("💼 ITViec")
+st.sidebar.image(str(FIG / "itviec_logo.png"), width=140)
 st.sidebar.caption(f"Tìm công ty phù hợp trong {meta['n_companies']} công ty "
                    "công nghệ tại Việt Nam")
 st.sidebar.divider()
@@ -102,7 +102,11 @@ st.sidebar.caption(
     f"**{m2['n_train'] + m2['n_test']:,} đánh giá thật** của nhân viên."
 )
 
-st.image(str(FIG / "hero_vanphong.png"), use_container_width=True)
+st.image(str(FIG / "hero_itviec.jpg"), use_container_width=True)
+st.caption(
+    "Đồ án sinh viên, **không liên kết với ITViec** và không được ITViec bảo "
+    "trợ. Logo cùng hình ảnh thuộc về ITViec, sử dụng trong phạm vi học tập."
+)
 
 
 # ═══════════════════════════════════════════════ Thành phần dùng lại
@@ -202,8 +206,8 @@ if page in ("Tìm công ty phù hợp", "Công ty cùng nhóm với chúng tôi"
                 "viên sẽ đem ra so sánh khi cân nhắc lời mời của bạn."
             )
     with c2:
-        st.image(str(FIG / ("vai_ung_vien.png" if LA_UNG_VIEN
-                            else "vai_nha_tuyen_dung.png")),
+        st.image(str(FIG / ("vai_ung_vien_anh.jpg" if LA_UNG_VIEN
+                            else "vai_nha_tuyen_dung_anh.jpg")),
                  use_container_width=True)
 
     nhan_tab1 = "Bắt đầu từ một công ty" if LA_UNG_VIEN else "Chọn công ty của bạn"
@@ -327,8 +331,8 @@ elif page in ("Đọc hiểu một đánh giá", "Phân tích phản hồi nhân
                 "hiệu không hài lòng."
             )
     with c2:
-        st.image(str(FIG / ("vai_ung_vien.png" if LA_UNG_VIEN
-                            else "vai_nha_tuyen_dung.png")),
+        st.image(str(FIG / ("vai_ung_vien_anh.jpg" if LA_UNG_VIEN
+                            else "vai_nha_tuyen_dung_anh.jpg")),
                  use_container_width=True)
 
     trai, phai = st.columns([3, 2])
@@ -525,6 +529,30 @@ thứ tự khá nhất quán giữa các công ty.
     )
 
     st.divider()
+    st.subheader("Công ty nào có nhiều người đánh giá nhất")
+    st.image(str(FIG / "05_concentration.png"), use_container_width=True)
+    st.markdown(
+        """
+Điều này quan trọng khi bạn đọc đánh giá về một công ty. **Một công ty lớn
+chiếm gần một phần tư toàn bộ số đánh giá**, và chỉ 11 công ty đã chiếm một
+nửa. Với những công ty chỉ có dăm ba đánh giá, một người bất mãn hay một người
+quá nhiệt tình cũng đủ làm lệch bức tranh.
+
+Khi xem một công ty, hãy để ý xem có bao nhiêu người đã lên tiếng trước khi tin
+vào điểm trung bình.
+        """
+    )
+
+    st.divider()
+    st.subheader("Dữ liệu này mới tới đâu")
+    st.image(str(FIG / "06_reviews_over_time.png"), use_container_width=True)
+    st.caption(
+        "Đánh giá trải dài từ tháng 7 năm 2016 tới tháng 5 năm 2025. Một công "
+        "ty có thể đã thay đổi nhiều so với lúc người ta viết đánh giá, nhất "
+        "là những đánh giá từ các năm đầu."
+    )
+
+    st.divider()
     st.subheader("Người ta viết đánh giá bằng ngôn ngữ nào")
     # Cột trái rộng hơn cột phải: nhãn "Nhân viên đánh giá" và tiêu đề trục
     # đều dài, cột hẹp sẽ cắt mất chữ.
@@ -561,6 +589,8 @@ tiếng Anh. Thử tìm lại bằng tiếng Anh nếu kết quả chưa như ý
 # ═══════════════════════════════════════════════ 4. Về ứng dụng
 else:
     st.title("Về ứng dụng")
+
+    st.image(str(FIG / "itviec_minhhoa.jpg"), use_container_width=True)
 
     st.header("Ứng dụng này làm được gì")
     c1, c2 = st.columns(2)
@@ -649,8 +679,27 @@ không học được gì.
         c4.metric("Accuracy", f"{m2['Accuracy']:.3f}")
         c4.caption(f"đoán bừa đạt {m2['baseline_accuracy'] * 100:.1f}%")
 
-        f1, f2, f3 = st.tabs(["So sánh 15 mô hình", "Xử lý mất cân bằng",
-                              "Văn bản đóng góp gì"])
+        f0, f1, f2, f3 = st.tabs(["Đánh giá phần gợi ý công ty",
+                                  "So sánh 15 mô hình", "Xử lý mất cân bằng",
+                                  "Văn bản đóng góp gì"])
+        with f0:
+            st.image(str(FIG / "09_yc1_precision.png"), use_container_width=True)
+            st.write(
+                "Cả năm phương pháp đều vượt mốc chọn ngẫu nhiên trên cả ba "
+                "thuộc tính đối chứng. Con số của Loại hình trông cao nhất "
+                "nhưng gần như vô nghĩa vì chỉ có ba loại hình, bốc bừa cũng "
+                "đúng 43,9 phần trăm. Lĩnh vực có 33 giá trị nên mốc ngẫu "
+                "nhiên chỉ 12,8 phần trăm, và đó mới là thuộc tính phân biệt "
+                "được phương pháp tốt với phương pháp dở."
+            )
+            st.image(str(FIG / "10_yc1_overlap.png"), use_container_width=True)
+            st.write(
+                "Hai cài đặt TF-IDF của hai thư viện trùng nhau 0,81 số gợi ý, "
+                "xác nhận cả hai được cấu hình đúng. BM25 tuy cũng đếm từ mà "
+                "chỉ trùng khoảng 0,46. Doc2Vec gần như không đồng thuận với "
+                "ai, chỉ 0,13 tới 0,16, và đó là dấu hiệu xấu vì nó cũng có "
+                "điểm thấp nhất."
+            )
         with f1:
             st.image(str(FIG / "12_yc2_comparison.png"), use_container_width=True)
             st.write(
@@ -680,10 +729,18 @@ không học được gì.
             )
 
     st.divider()
-    st.caption(
-        "Đồ án tốt nghiệp Data Science, Nhóm 5: Lư Trần Nguyên Đăng, "
-        "Nguyễn Anh Duy, Phạm Thị Phương Thúy. Trung Tâm Tin Học, Trường Đại "
-        "học Khoa học Tự nhiên, ĐHQG-HCM.\n\n"
-        "Dữ liệu chỉ dùng cho mục đích học tập, không chia sẻ hoặc sử dụng cho "
-        "mục đích khác."
+    st.markdown(
+        """
+**Đồ án tốt nghiệp Data Science, Nhóm 5**  
+Lư Trần Nguyên Đăng, Nguyễn Anh Duy, Phạm Thị Phương Thúy  
+Trung Tâm Tin Học, Trường Đại học Khoa học Tự nhiên, ĐHQG-HCM
+
+Đây là **bài tập của sinh viên**, không liên kết với ITViec, không được ITViec
+bảo trợ hay kiểm duyệt. Tên, logo và hình ảnh ITViec thuộc quyền sở hữu của
+ITViec, được sử dụng ở đây trong phạm vi học tập để minh hoạ cho bộ dữ liệu mà
+nhà trường cung cấp.
+
+Dữ liệu chỉ dùng cho mục đích học tập, không chia sẻ hoặc sử dụng cho mục đích
+khác.
+        """
     )
