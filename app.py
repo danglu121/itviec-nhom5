@@ -115,7 +115,7 @@ st.sidebar.caption(
 # Thông tin nhóm đặt cuối thanh bên, dưới phần điều hướng, để không chen
 # vào luồng thao tác của người dùng.
 st.sidebar.divider()
-st.sidebar.markdown("**Nhóm 5 thực hiện**")
+st.sidebar.markdown("**Thông tin liên hệ**")
 for _ten, _mail in [
     ("Lư Trần Nguyên Đăng", "lutrannguyendang@gmail.com"),
     ("Phạm Thị Phương Thúy", "phuongthuy219@gmail.com"),
