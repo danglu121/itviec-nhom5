@@ -112,6 +112,24 @@ st.sidebar.caption(
     f"**{m2['n_train'] + m2['n_test']:,} đánh giá thật** của nhân viên."
 )
 
+# Thông tin nhóm đặt cuối thanh bên, dưới phần điều hướng, để không chen
+# vào luồng thao tác của người dùng.
+st.sidebar.divider()
+st.sidebar.markdown("**Nhóm 5 thực hiện**")
+for _ten, _mail in [
+    ("Lư Trần Nguyên Đăng", "lutrannguyendang@gmail.com"),
+    ("Phạm Thị Phương Thúy", "phuongthuy219@gmail.com"),
+    ("Nguyễn Anh Duy", "toulouse18uef@gmail.com"),
+]:
+    st.sidebar.markdown(
+        f"<div style='line-height:1.35;margin-bottom:9px'>"
+        f"<span style='font-size:13px'>{_ten}</span><br>"
+        f"<a href='mailto:{_mail}' style='font-size:11.5px;color:{XAM};"
+        f"text-decoration:none'>{_mail}</a></div>",
+        unsafe_allow_html=True)
+st.sidebar.caption(
+    "Trung Tâm Tin Học, Trường Đại học Khoa học Tự nhiên, ĐHQG-HCM")
+
 st.image(str(FIG / "hero_itviec.jpg"), use_container_width=True)
 st.caption(
     "Đồ án sinh viên, **không liên kết với ITViec** và không được ITViec bảo "
