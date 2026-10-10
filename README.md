@@ -63,6 +63,8 @@ GUI_Project2/
 │   ├── search_tfidf.joblib     vectorizer phục vụ tìm kiếm tự do
 │   ├── recommend_clf.joblib    bộ phân loại XGBoost
 │   ├── map_2d.npy              toạ độ t-SNE để vẽ bản đồ công ty
+│   ├── company_stats.parquet   điểm đánh giá gộp của 180 công ty
+│   ├── reviews_monthly.parquet số đánh giá theo từng tháng
 │   └── metadata.json           chỉ số đánh giá
 ├── figures/
 │   ├── banner.png              ảnh đầu trang, tự dựng bằng matplotlib
@@ -86,6 +88,22 @@ minh hoạ chứ không phải thước đo khoảng cách chính xác. Để bi
 nào, tôi đã đo: **46,7% láng giềng thật rơi vào 20 điểm gần nhất trên bản đồ**, so với
 4,2% nếu các điểm được đặt ngẫu nhiên. Chiếu thẳng bằng SVD hai chiều chỉ đạt 14,8%,
 nên t-SNE được chọn.
+
+## Phần tương tác
+
+Các biểu đồ người dùng nhìn thấy đều **dựng trực tiếp từ dữ liệu lúc chạy**, không
+phải ảnh tĩnh, nên rê chuột xem được chi tiết và lọc được theo ý mình.
+
+| Chỗ nào | Tương tác được gì |
+|---|---|
+| Thẻ công ty trong kết quả gợi ý | Hiện luôn điểm chung, tỷ lệ giới thiệu, số người đánh giá |
+| Tra điểm đánh giá của một công ty | Chọn trong 180 công ty, so 5 khía cạnh với mức giữa thị trường |
+| Điểm cao có đi kèm nhiều người đánh giá không | Lọc theo lĩnh vực, rê chuột xem tên công ty, cuộn để phóng to |
+| Dữ liệu này mới tới đâu | Thanh trượt chọn khoảng năm, số liệu bên cạnh tự cập nhật |
+| Bản đồ công ty | Rê chuột xem tên và lĩnh vực từng chấm |
+
+Ảnh tĩnh chỉ còn trong mục **Chi tiết kỹ thuật** ở trang Về ứng dụng, nơi chúng đóng
+vai trò bằng chứng về cách chọn mô hình chứ không phải nội dung cho người dùng cuối.
 
 ## 4. Dữ liệu được đóng gói ở mức tối thiểu
 

@@ -124,6 +124,41 @@ print(f"  bộ phân loại: {mb(OUT / 'recommend_clf.joblib'):.2f} MB")
 print(f"  F1_No {metrics['F1_No']} | Recall_No {metrics['Recall_No']} | "
       f"Acc {metrics['Accuracy']} | AUC {metrics['ROC_AUC']}")
 
+# ═══════════════════ BẢNG TỔNG HỢP CHO GIAO DIỆN ═══════════════════
+# Chỉ số liệu GỘP theo công ty và theo tháng. Không kèm nội dung review của
+# từng người, nên vẫn giữ đúng nguyên tắc đóng gói dữ liệu ở mức tối thiểu.
+rv_full = pd.read_parquet(SRC / "data" / "reviews_clean.parquet")
+ov = pd.read_parquet(SRC / "data" / "overview_reviews_clean.parquet")
+
+KHIA_CANH = ["Overall rating"] + NUMERIC[1:]
+
+gop = rv_full.groupby("id").agg(
+    so_review=("label", "size"),
+    ty_le_gioi_thieu=("label", "mean"),
+    diem_tu_review=("Rating", "mean"),
+    review_dau=("Cmt_date", "min"),
+    review_cuoi=("Cmt_date", "max"),
+).reset_index()
+
+stats = (co[["id", "Company Name", "Company industry", "Company Type",
+             "Company size", "Country"]]
+         .merge(gop, on="id", how="inner")
+         .merge(ov[["id"] + KHIA_CANH], on="id", how="left"))
+stats["ty_le_gioi_thieu"] = (stats["ty_le_gioi_thieu"] * 100).round(1)
+stats["diem_tu_review"] = stats["diem_tu_review"].round(2)
+# Điểm 0 nghĩa là chưa ai chấm khía cạnh đó, không phải chấm 0 điểm
+for c in KHIA_CANH:
+    stats[c] = stats[c].replace(0, np.nan).round(2)
+stats.to_parquet(OUT / "company_stats.parquet", index=False)
+print(f"\n  thống kê công ty: {stats.shape}  {mb(OUT / 'company_stats.parquet'):.2f} MB")
+
+thang = (rv_full.dropna(subset=["Cmt_date"]).set_index("Cmt_date")
+         .resample("MS").agg(so_review=("label", "size"),
+                             ty_le_gioi_thieu=("label", "mean")).reset_index())
+thang["ty_le_gioi_thieu"] = (thang["ty_le_gioi_thieu"] * 100).round(1)
+thang.to_parquet(OUT / "reviews_monthly.parquet", index=False)
+print(f"  chuỗi theo tháng: {thang.shape}  {mb(OUT / 'reviews_monthly.parquet'):.2f} MB")
+
 # ══════════════════════════════ SIÊU DỮ LIỆU ══════════════════════════════
 yc1 = json.loads((SRC / "outputs" / "yc1_report.json").read_text(encoding="utf-8"))
 meta = {

@@ -56,6 +56,16 @@ def load_neighbors():
 
 
 @st.cache_data
+def load_stats() -> pd.DataFrame:
+    return pd.read_parquet(ART / "company_stats.parquet")
+
+
+@st.cache_data
+def load_monthly() -> pd.DataFrame:
+    return pd.read_parquet(ART / "reviews_monthly.parquet")
+
+
+@st.cache_data
 def load_map() -> np.ndarray:
     return np.load(ART / "map_2d.npy")
 
@@ -126,6 +136,20 @@ def the_cong_ty(rows: pd.DataFrame, diem: np.ndarray, goc: pd.Series | None):
                 + f"{r['Company industry']}  ·  {r['Company Type']}  ·  "
                 + f"{r['Company size']}  ·  {r['Country']}"
             )
+            # Gắn điểm đánh giá nếu công ty này từng có người chấm. Đây là
+            # thứ người tìm việc muốn biết ngay, không nên bắt họ mở trang khác.
+            dg = diem_danh_gia(r["id"])
+            if dg is not None:
+                m1, m2_, m3 = st.columns(3)
+                m1.markdown(f"⭐ **{dg['Overall rating']:.1f}** / 5"
+                            if pd.notna(dg["Overall rating"]) else "⭐ chưa có điểm")
+                m2_.markdown(f"👍 **{dg['ty_le_gioi_thieu']:.0f}%** giới thiệu")
+                m3.markdown(f"💬 **{int(dg['so_review'])}** đánh giá")
+            else:
+                st.markdown(
+                    f"<span style='color:{XAM};font-size:13px'>"
+                    "Chưa có nhân viên nào đánh giá công ty này</span>",
+                    unsafe_allow_html=True)
             mo_ta = str(r["text_raw"])
             st.write(mo_ta[:340] + ("..." if len(mo_ta) > 340 else ""))
             # Cột trái phải đủ rộng, nếu không thì "Xem trên ITViec" bị
@@ -134,6 +158,13 @@ def the_cong_ty(rows: pd.DataFrame, diem: np.ndarray, goc: pd.Series | None):
             if isinstance(r["Href"], str) and r["Href"].startswith("http"):
                 a.markdown(f"[Xem trên ITViec]({r['Href']})")
             b.caption(f"Làm việc {r['Working days']}  ·  {r['Overtime Policy']}")
+
+
+def diem_danh_gia(cty_id):
+    """Trả về dòng thống kê của một công ty, hoặc None nếu chưa ai đánh giá."""
+    st_df = load_stats()
+    hit = st_df[st_df["id"] == cty_id]
+    return None if hit.empty else hit.iloc[0]
 
 
 def bieu_do_do_hop(rows: pd.DataFrame, diem: np.ndarray):
@@ -512,45 +543,130 @@ elif page == "Toàn cảnh thị trường IT":
                    "đông người thì nhóm trên 1000 nhân sự chỉ có vài chục lựa chọn.")
 
     st.divider()
-    st.subheader("Nhân viên hài lòng nhất và kém hài lòng nhất về điều gì")
-    st.image(str(FIG / "03_rating_coverage.png"), use_container_width=True)
-    st.markdown(
-        """
-Hai điều đáng chú ý.
+    st.subheader("Tra điểm đánh giá của một công ty")
+    st_df = load_stats()
+    KHIA = ["Salary & benefits", "Training & learning",
+            "Management cares about me", "Culture & fun", "Office & workspace"]
+    KHIA_VI = {"Salary & benefits": "Lương và phúc lợi",
+               "Training & learning": "Cơ hội học hỏi",
+               "Management cares about me": "Sếp quan tâm nhân viên",
+               "Culture & fun": "Văn hoá và không khí",
+               "Office & workspace": "Văn phòng và chỗ ngồi"}
 
-**Chỉ 180 trong 478 công ty có người đánh giá.** Nếu công ty bạn quan tâm nằm
-ngoài nhóm này thì không có dữ liệu nào để tham khảo, và im lặng không có nghĩa
-là tốt hay xấu.
+    ten_tra = st.selectbox(
+        f"Chọn công ty, {len(st_df)} công ty đã có người đánh giá",
+        st_df.sort_values("so_review", ascending=False)["Company Name"].tolist())
+    r = st_df[st_df["Company Name"] == ten_tra].iloc[0]
 
-**Lương và cơ hội học hỏi bị chấm thấp nhất**, còn văn hoá và văn phòng được
-chấm cao nhất. Khoảng cách chỉ khoảng 0,17 điểm nên đừng đọc quá mạnh, nhưng
-thứ tự khá nhất quán giữa các công ty.
-        """
-    )
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Điểm chung",
+              f"{r['Overall rating']:.1f} / 5" if pd.notna(r["Overall rating"])
+              else "chưa có")
+    c2.metric("Tỷ lệ sẽ giới thiệu", f"{r['ty_le_gioi_thieu']:.0f}%")
+    c3.metric("Số người đánh giá", f"{int(r['so_review'])}")
+    c4.metric("Đánh giá gần nhất", f"{pd.to_datetime(r['review_cuoi']):%m/%Y}")
+
+    if r["so_review"] < 10:
+        st.warning(
+            f"Chỉ {int(r['so_review'])} người đánh giá công ty này. Với số "
+            "lượng ít như vậy, một ý kiến cực đoan cũng đủ kéo lệch điểm trung "
+            "bình. Hãy đọc kỹ từng đánh giá thay vì nhìn con số tổng."
+        )
+
+    # So điểm từng khía cạnh với mức giữa của toàn thị trường, để người xem
+    # biết công ty này mạnh yếu ở đâu chứ không chỉ thấy một con số trần trụi.
+    trung_vi = {k: st_df[k].median() for k in KHIA}
+    ss = pd.DataFrame([
+        {"khia_canh": KHIA_VI[k], "nhom": "Công ty này", "diem": r[k]}
+        for k in KHIA if pd.notna(r[k])
+    ] + [
+        {"khia_canh": KHIA_VI[k], "nhom": "Mức giữa thị trường",
+         "diem": trung_vi[k]} for k in KHIA if pd.notna(r[k])
+    ])
+    if ss.empty:
+        st.info("Công ty này chưa có điểm cho từng khía cạnh.")
+    else:
+        st.altair_chart(
+            alt.Chart(ss).mark_bar(cornerRadius=3).encode(
+                # tickCount thưa lại, nếu không Altair chia tới 26 vạch
+                x=alt.X("diem:Q", title="Điểm (thang 1 tới 5)",
+                        scale=alt.Scale(domain=[0, 5]),
+                        axis=alt.Axis(tickCount=6)),
+                y=alt.Y("khia_canh:N", sort=None, title=None,
+                        axis=alt.Axis(labelLimit=220, labelOverlap=False)),
+                yOffset="nhom:N",
+                color=alt.Color("nhom:N", scale=alt.Scale(
+                    domain=["Công ty này", "Mức giữa thị trường"],
+                    range=[XANH, "#c9ccd1"]),
+                    legend=alt.Legend(title=None, orient="top")),
+                tooltip=[alt.Tooltip("khia_canh:N", title="Khía cạnh"),
+                         alt.Tooltip("nhom:N", title=""),
+                         alt.Tooltip("diem:Q", format=".2f", title="Điểm")],
+            ).properties(height=290), use_container_width=True)
 
     st.divider()
-    st.subheader("Công ty nào có nhiều người đánh giá nhất")
-    st.image(str(FIG / "05_concentration.png"), use_container_width=True)
-    st.markdown(
-        """
-Điều này quan trọng khi bạn đọc đánh giá về một công ty. **Một công ty lớn
-chiếm gần một phần tư toàn bộ số đánh giá**, và chỉ 11 công ty đã chiếm một
-nửa. Với những công ty chỉ có dăm ba đánh giá, một người bất mãn hay một người
-quá nhiệt tình cũng đủ làm lệch bức tranh.
+    st.subheader("Điểm cao có đi kèm nhiều người đánh giá không?")
+    nganh_chon = st.multiselect(
+        "Lọc theo lĩnh vực, để trống là xem tất cả",
+        sorted(st_df["Company industry"].dropna().unique()))
+    loc = st_df if not nganh_chon else st_df[st_df["Company industry"].isin(nganh_chon)]
+    loc = loc.dropna(subset=["Overall rating"])
 
-Khi xem một công ty, hãy để ý xem có bao nhiêu người đã lên tiếng trước khi tin
-vào điểm trung bình.
-        """
+    st.altair_chart(
+        alt.Chart(loc).mark_circle(opacity=0.72).encode(
+            x=alt.X("so_review:Q", title="Số người đánh giá",
+                    scale=alt.Scale(type="log")),
+            y=alt.Y("Overall rating:Q", title="Điểm chung",
+                    scale=alt.Scale(domain=[2, 5])),
+            size=alt.Size("ty_le_gioi_thieu:Q", title="% giới thiệu",
+                          scale=alt.Scale(range=[25, 320])),
+            color=alt.Color("Company Type:N", title=None,
+                            scale=alt.Scale(scheme="tableau10"),
+                            legend=alt.Legend(orient="top", columns=2,
+                                              labelLimit=260)),
+            tooltip=[alt.Tooltip("Company Name:N", title="Công ty"),
+                     alt.Tooltip("Company industry:N", title="Lĩnh vực"),
+                     alt.Tooltip("so_review:Q", title="Số đánh giá"),
+                     alt.Tooltip("Overall rating:Q", format=".2f", title="Điểm"),
+                     alt.Tooltip("ty_le_gioi_thieu:Q", format=".0f",
+                                 title="% giới thiệu")],
+        ).properties(height=400).interactive(), use_container_width=True)
+    st.caption(
+        f"Đang hiện {len(loc)} công ty. Trục ngang dùng thang log vì số đánh "
+        "giá chênh nhau rất lớn, từ 3 tới hơn hai nghìn. Rê chuột lên từng "
+        "chấm để xem tên, cuộn để phóng to, kéo để di chuyển. "
+        "**Các chấm bên trái là công ty có rất ít đánh giá**, điểm của họ kém "
+        "tin cậy hơn dù cao hay thấp."
     )
 
     st.divider()
     st.subheader("Dữ liệu này mới tới đâu")
-    st.image(str(FIG / "06_reviews_over_time.png"), use_container_width=True)
-    st.caption(
-        "Đánh giá trải dài từ tháng 7 năm 2016 tới tháng 5 năm 2025. Một công "
-        "ty có thể đã thay đổi nhiều so với lúc người ta viết đánh giá, nhất "
-        "là những đánh giá từ các năm đầu."
-    )
+    th = load_monthly()
+    th["nam"] = pd.to_datetime(th["Cmt_date"]).dt.year
+    nam_min, nam_max = int(th["nam"].min()), int(th["nam"].max())
+    khoang = st.slider("Khoảng thời gian", nam_min, nam_max,
+                       (nam_min, nam_max))
+    tv = th[(th["nam"] >= khoang[0]) & (th["nam"] <= khoang[1])]
+
+    c1, c2 = st.columns([3, 1])
+    with c1:
+        st.altair_chart(
+            alt.Chart(tv).mark_area(
+                line={"color": XANH}, opacity=0.25, color=XANH).encode(
+                x=alt.X("Cmt_date:T", title="Thời gian"),
+                y=alt.Y("so_review:Q", title="Số đánh giá mỗi tháng"),
+                tooltip=[alt.Tooltip("Cmt_date:T", title="Tháng",
+                                     format="%m/%Y"),
+                         alt.Tooltip("so_review:Q", title="Số đánh giá"),
+                         alt.Tooltip("ty_le_gioi_thieu:Q", format=".0f",
+                                     title="% giới thiệu")],
+            ).properties(height=280).interactive(), use_container_width=True)
+    with c2:
+        st.metric("Đánh giá trong khoảng", f"{int(tv['so_review'].sum()):,}")
+        st.metric("Tỷ lệ giới thiệu trung bình",
+                  f"{tv['ty_le_gioi_thieu'].mean():.0f}%")
+        st.caption("Một công ty có thể đã thay đổi nhiều so với lúc người ta "
+                   "viết đánh giá, nhất là các năm đầu.")
 
     st.divider()
     st.subheader("Người ta viết đánh giá bằng ngôn ngữ nào")
