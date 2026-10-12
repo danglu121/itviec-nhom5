@@ -15,8 +15,8 @@ Người dùng chọn vai khi vào app, và các mục sẽ đổi theo vai đó
 
 | Vai | Mục chính | Nội dung |
 |---|---|---|
-| **Tôi đang tìm việc** | Tìm công ty phù hợp | Bắt đầu từ một công ty đã thích, hoặc tả bằng lời nơi muốn làm việc |
-| | Đọc hiểu một đánh giá | Dán một review tìm được, xem nó nghiêng về khen hay chê |
+| **Tôi đang tìm việc** | Tìm công ty phù hợp | Bắt đầu từ một công ty đã thích, hoặc tả bằng lời nơi muốn làm việc. Lọc theo lĩnh vực, quy mô, loại hình và chính sách tăng ca. Bấm vào một chấm trên bản đồ để mở hồ sơ công ty, hoặc đặt vài công ty cạnh nhau ở thẻ so sánh |
+| | Đọc hiểu một đánh giá | Dán một review tìm được, xem nó nghiêng về khen hay chê, và thử xem từng mục chấm sao có sức nặng ra sao |
 | **Tôi là nhà tuyển dụng** | Công ty cùng nhóm với chúng tôi | Xem nhóm công ty đang cạnh tranh thu hút cùng tệp ứng viên |
 | | Phân tích phản hồi nhân viên | Dán phản hồi của nhân viên để phát hiện sớm dấu hiệu không hài lòng |
 
@@ -24,7 +24,7 @@ Hai mục còn lại dùng chung cho cả hai vai:
 
 | Mục | Nội dung |
 |---|---|
-| **Toàn cảnh thị trường IT** | Lĩnh vực nào nhiều công ty, quy mô đội ngũ, nhân viên hài lòng về điều gì, và chuyện trộn hai ngôn ngữ |
+| **Toàn cảnh thị trường IT** | Năm thẻ: bức tranh chung (bấm vào một lĩnh vực để lọc nhanh), điểm và số đánh giá, tra một công ty, so sánh công ty, và diễn biến theo thời gian |
 | **Về ứng dụng** | Viết cho người thường đọc: số liệu đến từ đâu, chính xác tới đâu, khi nào không nên tin. Phần kỹ thuật đặt trong mục mở rộng cho ai quan tâm |
 
 Toàn bộ nội dung viết theo hướng **giải quyết việc của người dùng**, không trình
